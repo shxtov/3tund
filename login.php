@@ -9,7 +9,7 @@
 	
 	//var_dump($_GET);
 	//echo "<br>";
-    //var_dump($_POST);
+    var_dump($_POST);
 	
 	$signupEmailError = "";
 	$signupPasswordError = "";
@@ -19,11 +19,7 @@
 	$signupEmail = "";
 	$signupBday = "1995-02-25";
 	$signupGender = "male";
-	$signupCarPref1 = "";
-	$signupCarPref2 = "";
-	$signupCarPref3 = "";
-	$signupCarPref4 = "";
-	$signupCarPref5 = "";
+	$signupCarPref_items = [];
 
 
 	// kas epost oli olemas
@@ -73,31 +69,7 @@
     }
 
 
-    if (isset ($_POST ["signupCarPref1"]) && isset($_POST["signupCarPref2"]) && isset($_POST["signupCarPref3"])&& isset($_POST["signupCarPref4"])&& isset($_POST["signupCarPref5"])) {
 
-        if (empty ($_POST ["signupCarPref1"]) && empty($_POST["signupCarPref2"]) && empty($_POST["signupCarPref3"]) && empty($_POST["signupCarPref4"]) && empty($_POST["signupCarPref5"])){
-
-            // if not a single carpref was selected
-            $signupCarPrefError = "Vähemalt üks valik on kohustuslik!";
-
-        }
-    }
-	
-	if (isset ($_POST['signupCarPref1'])){
-		$signupCarPref1 = $_POST["signupCarPref1"];
-	}
-	if (isset ($_POST['signupCarPref2'])){
-		$signupCarPref2 = $_POST["signupCarPref2"];
-	}
-	if (isset ($_POST['signupCarPref3'])){
-		$signupCarPref3 = $_POST["signupCarPref3"];
-	}
-	if (isset ($_POST['signupCarPref4'])){
-		$signupCarPref4 = $_POST["signupCarPref4"];
-	}
-	if (isset ($_POST['signupCarPref5'])){
-		$signupCarPref5 = $_POST["signupCarPref5"];
-	}
 
 
 	if (isset ($_POST ["signupPassword"])){
@@ -129,14 +101,25 @@
 	}
 
 
+	if (isset($_POST['signupCarPref_items'])){
+		if (!in_array("eucars", $_POST['signupCarPref_items']) && !in_array("uscars",$_POST['signupCarPref_items']) &&
+				!in_array("japcars",$_POST['signupCarPref_items']) && !in_array("ruscars",$_POST['signupCarPref_items']) && !in_array("korcars",$_POST['signupCarPref_items'])){
+			$signupCarPrefError = 'Vähemalt üks valik on kohustuslik!';
+		} else {
+
+			$signupCarPref_items = $_POST["signupCarPref_items"];
+		}
+
+
+	}
+
+
+
 
 
 
 // tean et ühtegi viga ei olnud ja saan andmed salvestatud
-	if (empty ($signupEmailError)&& 
-		empty($signupPasswordError) &&
-		isset ($_POST['signupPassword']) &&
-		isset ($_POST['signupEmail'])){
+	if (empty ($signupEmailError)&& empty($signupPasswordError) && isset ($_POST['signupPassword']) && isset ($_POST['signupEmail'])){
 			echo "Salvestan...<br>";
 			echo "E-mail: ".$signupEmail."<br>";	
 			$password = hash("sha512", $_POST["signupPassword"]);
@@ -268,54 +251,48 @@
                 <tr>
                     <td class="table1-style6">Autohuvid:<span class = 'redtext'>*</span></td>
                     <td class="table1-style5">
-                        <input type="hidden" name="signupCarPref1"  value="">
-                        <input type="hidden" name="signupCarPref2"  value="">
-                        <input type="hidden" name="signupCarPref3"  value="">
-                        <input type="hidden" name="signupCarPref4"  value="">
-                        <input type="hidden" name="signupCarPref5"  value="">
-						
-						
-						<?php if($signupCarPref1 == "eucars") { ?>
-							<input type="checkbox" name="signupCarPref1" value="eucars" checked> Euroopa autod<br>
+
+						<input type="hidden" name="signupCarPref_items[]"  value="">
+
+						<?php if(in_array("eucars", $_POST['signupCarPref_items'])){?>
+							<input type="checkbox" name="signupCarPref_items[]" value="eucars" checked> Euroopa autod<br>
 						<?php } else { ?>
-							<input type="checkbox" name="signupCarPref1" value="eucars"> Euroopa autod<br>
+							<input type="checkbox" name="signupCarPref_items[]" value="eucars"> Euroopa autod<br>
 						<?php } ?>
-						
-						<?php if($signupCarPref2 ==  "uscars") { ?>
-							<input type="checkbox" name="signupCarPref2" value="uscars" checked> Ameerika autod<br>
+
+						<?php if(in_array("uscars", $_POST['signupCarPref_items'])){?>
+							<input type="checkbox" name="signupCarPref_items[]" value="uscars" checked> Ameerika autod<br>
 						<?php } else { ?>
-							<input type="checkbox" name="signupCarPref2" value="uscars"> Ameerika autod<br>
+							<input type="checkbox" name="signupCarPref_items[]" value="uscars"> Ameerika autod<br>
 						<?php } ?>
-						
-						<?php if($signupCarPref3 ==  "japcars") { ?>
-							<input type="checkbox" name="signupCarPref3" value="japcars" checked> Jaapani autod<br>
-						<?php } else {?>
-							<input type="checkbox" name="signupCarPref3" value="japcars"> Jaapani autod<br>
-						<?php } ?>
-						
-						<?php if($signupCarPref4 == "ruscars") { ?>
-							<input type="checkbox" name="signupCarPref4" value="ruscars" checked> Vene autod<br>
+
+						<?php if(in_array("japcars", $_POST['signupCarPref_items'])){?>
+							<input type="checkbox" name="signupCarPref_items[]" value="japcars" checked> Jaapani autod<br>
 						<?php } else { ?>
-							<input type="checkbox" name="signupCarPref4" value="ruscars"> Vene autod<br>
+							<input type="checkbox" name="signupCarPref_items[]" value="japcars"> Jaapani autod<br>
 						<?php } ?>
-						
-						<?php if($signupCarPref5 ==  "korcars") { ?>
-							<input type="checkbox" name="signupCarPref5" value="korcars" checked> Korea autod<br>
+
+						<?php if(in_array("ruscars", $_POST['signupCarPref_items'])){?>
+							<input type="checkbox" name="signupCarPref_items[]" value="ruscars" checked> Vene autod<br>
 						<?php } else { ?>
-							<input type="checkbox" name="signupCarPref5" value="korcars"> Korea autod<br>
+							<input type="checkbox" name="signupCarPref_items[]" value="ruscars"> Vene autod<br>
 						<?php } ?>
-						
-						
-                        <!-- <input type="checkbox" name="signupCarPref1" value="eucars"> Euroopa autod<br>
-                        <input type="checkbox" name="signupCarPref2" value="uscars"> Ameerika autod<br>
-                        <input type="checkbox" name="signupCarPref3" value="japcars"> Jaapani autod<br>
-                        <input type="checkbox" name="signupCarPref4" value="ruscars"> Vene autod<br>
-                        <input type="checkbox" name="signupCarPref5" value="korcars"> Korea autod</td> -->
+
+						<?php if(in_array("korcars", $_POST['signupCarPref_items'])){?>
+							<input type="checkbox" name="signupCarPref_items[]" value="korcars" checked> Korea autod<br>
+						<?php } else { ?>
+							<input type="checkbox" name="signupCarPref_items[]" value="korcars"> Korea autod<br>
+						<?php } ?>
+
+
+
+
+
                     <td class="table1-style1"><span class = 'redtext'><?=$signupCarPrefError;?></span></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="table1-style4"><input type ="submit" value = "Loo kasutaja"></td>
+                    <td class="table1-style4"><input type ="submit" value = "Submit"></td>
                     <td></td>
                 </tr>
             </table>
